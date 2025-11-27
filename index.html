@@ -4,102 +4,136 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>浅陌游戏俱乐部</title>
-        <!-- 替换CSS引用 -->
-        <!-- 替换为本站云服务 -->
-        <link href="https://cdn.staticfile.org/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-        <script src="https://cdn.staticfile.org/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-        <link href="css/custom.css" rel="stylesheet">
+    <link href="https://cdn.staticfile.org/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <link href="css/custom.css" rel="stylesheet">
     <style>
         /* 全局样式 */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            /* 移除原有背景样式，使用外部custom.css的统一背景 */
             overflow-x: hidden;
         }
-
-        /* 已移除冗余动画样式，依赖外部custom.css统一样式 */
-
         html, body {
             height: 100%;
         }
-
-        /* 顶部导航栏 */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #ffffff;
-            border-bottom: 2px solid #d40000;
-            position: fixed; /* 固定导航栏在屏幕顶部 */
-            top: 0;
-            left: 0;
-            width: 100%;
+        /* 灵动岛标题栏核心样式 - 黑色毛玻璃+果冻回弹动画 */
+        .dynamic-island {
+            width: 280px;
+            height: 52px;
+            /* 黑色毛玻璃核心样式 */
+            background-color: rgba(15, 15, 15, 0.85); /* 深黑半透明底色 */
+            backdrop-filter: blur(12px); /* 毛玻璃模糊效果 */
+            -webkit-backdrop-filter: blur(12px); /* 兼容Safari */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* 细边框增强质感 */
+            border-radius: 26px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); /* 增强阴影层次感 */
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar .logo {
-            font-size: 20px;
-            font-weight: bold;
-            color: #d40000;
-            text-decoration: none;
-        }
-
-        .navbar .nav-links {
             display: flex;
             align-items: center;
-            gap: 20px; /* 增加导航链接之间的间距 */
+            /* 果冻回弹动画：使用cubic-bezier自定义回弹曲线 */
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* 关键动画曲线 */
+            overflow: hidden;
+            padding: 0 20px;
         }
-
-        .navbar .nav-links a {
+            /* 灵动岛默认状态文本样式 */
+            .dynamic-island .island-default {
+                color: #ffffff; /* 白色文本适配黑色背景 */
+                font-size: 18px;
+                font-weight: bold;
+                cursor: default;
+                line-height: 1.2;
+                white-space: nowrap;
+                transition: margin-left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* 文本同步回弹 */
+                margin-left: 0;
+            }
+            /* 灵动岛展开状态 - 果冻回弹效果 */
+            .dynamic-island:hover {
+                width: 80%;
+                max-width: 1200px;
+                border-radius: 26px;
+                transform: translateX(-50%) scale(1.02); /* 轻微缩放增强回弹感 */
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* 展开时阴影加深 */
+            }
+                .dynamic-island:hover .island-default {
+                    margin-left: 0;
+                }
+        /* 交互按钮容器 */
+        .island-buttons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: auto;
+            opacity: 0;
+            /* 按钮组动画延迟，让回弹更有层次 */
+            transition: opacity 0.4s ease 0.2s, margin-left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            padding: 0;
+        }
+        /* 展开时显示按钮组 */
+        .dynamic-island:hover .island-buttons {
+            opacity: 1;
+            margin-left: 20px;
+        }
+        /* 交互按钮样式 - 适配黑色毛玻璃 */
+        .island-buttons a {
             text-decoration: none;
-            color: #d40000;
-            font-size: 18px;
-            padding: 8px 12px;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .navbar .nav-links a:hover {
-            background-color: #d40000;
-            color: #ffffff;
-        }
-
-        /* 实时北京时间样式 */
-        .navbar .beijing-time {
+            color: #ffffff; /* 白色文本 */
             font-size: 16px;
-            color: #d40000;
-            margin-left: auto; /* 将时间显示推到导航栏的中间 */
-            margin-right: 20px; /* 增加与右侧链接的间距 */
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            white-space: nowrap;
         }
-
-        /* 标题区域样式 */
+            .island-buttons a:hover {
+                background-color: rgba(212, 0, 0, 0.8); /* 红色半透明背景 */
+                color: #ffffff;
+                transform: scale(1.05); /* 按钮hover轻微缩放 */
+            }
+        /* 时间显示样式 */
+        .island-time {
+            font-size: 14px;
+            color: #ffffff; /* 白色文本 */
+            margin-left: 20px;
+            margin-right: 0;
+            opacity: 0;
+            transition: opacity 0.4s ease 0.2s;
+            white-space: nowrap;
+        }
+        /* 展开时显示时间 */
+        .dynamic-island:hover .island-time {
+            opacity: 1;
+        }
+        /* 原页面其他样式保留 */
         .header {
             text-align: center;
             padding: 100px 20px 20px;
             background-color: transparent;
             animation: fadeIn 2s ease-out;
         }
-
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-
         .header h1 {
             font-size: 48px;
             color: #ff8c42;
             margin-bottom: 10px;
         }
-
         .header p {
             font-size: 20px;
             color: #ffcccc;
         }
-
         .header .join-button {
             display: inline-block;
             margin-top: 20px;
@@ -112,115 +146,95 @@
             box-shadow: 0 0 15px rgba(255, 92, 92, 0.7);
             transition: transform 0.3s, box-shadow 0.3s;
         }
-
-        .header .join-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255, 92, 92, 1);
-        }
-
-        /* 公告部分 */
+            .header .join-button:hover {
+                transform: scale(1.1);
+                box-shadow: 0 0 20px rgba(255, 92, 92, 1);
+            }
         .announcement {
             text-align: center;
             padding: 40px 20px;
             background-color: transparent;
         }
-
-        .announcement h2 {
-            font-size: 32px;
-            color: #ff8c42;
-            margin-bottom: 20px;
-        }
-
-        .announcement ul {
-            list-style: none;
-            padding: 0;
-            margin: 0 auto;
-            max-width: 600px;
-            text-align: left;
-        }
-
-        .announcement .list-group-item {
-            background-color: rgba(255, 92, 92, 0.8); /* 半透明背景 */
-            margin-bottom: 10px;
-            padding: 10px 15px;
-            border-radius: 8px;
-            color: #ffffff;
-            line-height: 1.6;
-        }
-
-        /* 下载部分 */
+            .announcement h2 {
+                font-size: 32px;
+                color: #ff8c42;
+                margin-bottom: 20px;
+            }
+            .announcement ul {
+                list-style: none;
+                padding: 0;
+                margin: 0 auto;
+                max-width: 600px;
+                text-align: left;
+            }
+            .announcement .list-group-item {
+                background-color: rgba(255, 92, 92, 0.8);
+                margin-bottom: 10px;
+                padding: 10px 15px;
+                border-radius: 8px;
+                color: #ffffff;
+                line-height: 1.6;
+            }
         .download-section {
             text-align: center;
             padding: 40px 20px;
             background-color: transparent;
         }
-
-        .download-section h2 {
-            font-size: 32px;
-            color: #ff8c42;
-            margin-bottom: 20px;
-        }
-
-        .download-section a {
-            display: inline-block;
-            padding: 12px 24px;
-            font-size: 18px;
-            color: #ffffff;
-            background-color: #d40000;
-            text-decoration: none;
-            border-radius: 30px;
-            box-shadow: 0 0 15px rgba(255, 92, 92, 0.7);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .download-section a:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255, 92, 92, 1);
-        }
-
-        /* 加入我们部分 */
+            .download-section h2 {
+                font-size: 32px;
+                color: #ff8c42;
+                margin-bottom: 20px;
+            }
+            .download-section a {
+                display: inline-block;
+                padding: 12px 24px;
+                font-size: 18px;
+                color: #ffffff;
+                background-color: #d40000;
+                text-decoration: none;
+                border-radius: 30px;
+                box-shadow: 0 0 15px rgba(255, 92, 92, 0.7);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+                .download-section a:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 0 20px rgba(255, 92, 92, 1);
+                }
         .join-us {
             text-align: center;
             padding: 40px 20px;
             background-color: transparent;
         }
-
-        .join-us h2 {
-            font-size: 32px;
-            color: #ff8c42;
-            margin-bottom: 20px;
-        }
-
-        .join-us img {
-            width: 200px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        .join-us p {
-            font-size: 18px;
-            color: #ffcccc;
-            margin-bottom: 20px;
-        }
-
-        .join-us .join-button {
-            display: inline-block;
-            padding: 12px 24px;
-            font-size: 18px;
-            color: #ffffff;
-            background-color: #d40000;
-            text-decoration: none;
-            border-radius: 30px;
-            box-shadow: 0 0 15px rgba(255, 92, 92, 0.7);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .join-us .join-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255, 92, 92, 1);
-        }
-
-        /* 页脚样式 */
+            .join-us h2 {
+                font-size: 32px;
+                color: #ff8c42;
+                margin-bottom: 20px;
+            }
+            .join-us img {
+                width: 200px;
+                height: auto;
+                margin-bottom: 20px;
+            }
+            .join-us p {
+                font-size: 18px;
+                color: #ffcccc;
+                margin-bottom: 20px;
+            }
+            .join-us .join-button {
+                display: inline-block;
+                padding: 12px 24px;
+                font-size: 18px;
+                color: #ffffff;
+                background-color: #d40000;
+                text-decoration: none;
+                border-radius: 30px;
+                box-shadow: 0 0 15px rgba(255, 92, 92, 0.7);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+                .join-us .join-button:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 0 20px rgba(255, 92, 92, 1);
+                }
         footer {
             text-align: center;
             padding: 20px 10px;
@@ -228,29 +242,23 @@
             color: #cccccc;
             margin-top: 20px;
         }
-
-        footer .container p {
-            margin: 5px 0;
-            font-size: 16px;
-        }
-
-        footer .social-icons a {
-            margin: 0 10px;
-            text-decoration: none;
-            color: #d40000;
-            font-size: 18px;
-            transition: color 0.3s;
-        }
-
-        footer .social-icons a:hover {
-            color: #ffffff;
-        }
-
-        footer .social-icons i {
-            margin-right: 5px;
-        }
-
-        /* 返回顶部按钮 */
+            footer .container p {
+                margin: 5px 0;
+                font-size: 16px;
+            }
+            footer .social-icons a {
+                margin: 0 10px;
+                text-decoration: none;
+                color: #d40000;
+                font-size: 18px;
+                transition: color 0.3s;
+            }
+                footer .social-icons a:hover {
+                    color: #ffffff;
+                }
+            footer .social-icons i {
+                margin-right: 5px;
+            }
         .back-to-top {
             position: fixed;
             bottom: 20px;
@@ -265,32 +273,42 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
         }
-
-        .back-to-top:hover {
-            transform: scale(1.2);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        /* 响应式设计 */
+            .back-to-top:hover {
+                transform: scale(1.2);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            }
+        /* 响应式设计优化 */
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                padding: 10px;
+            .dynamic-island {
+                width: 240px;
+                height: 48px;
+                padding: 0 15px;
+                background-color: rgba(15, 15, 15, 0.9); /* 移动端加深透明度 */
             }
-
-            .navbar .nav-links {
-                flex-direction: column;
-                align-items: center;
-                margin-top: 10px;
-                gap: 10px; /* 移动设备上减少间距 */
+                .dynamic-island .island-default {
+                    font-size: 16px;
+                }
+                .dynamic-island:hover {
+                    width: 90%;
+                    flex-wrap: wrap;
+                    padding: 8px 15px;
+                    height: auto;
+                    transform: translateX(-50%) scale(1.01); /* 移动端轻微缩放 */
+                }
+                    .dynamic-island:hover .island-buttons {
+                        margin-left: 0;
+                        margin-top: 8px;
+                        width: 100%;
+                        justify-content: center;
+                        gap: 8px;
+                    }
+            .island-time {
+                margin-left: 0;
+                margin-top: 8px;
+                width: 100%;
+                text-align: center;
+                font-size: 13px;
             }
-
-            .navbar .beijing-time {
-                margin-left: 0; /* 移动设备上时间显示居中 */
-                margin-right: 0;
-                order: -1; /* 将时间显示放在导航栏的最上方 */
-            }
-
             .header {
                 padding: 120px 10px 20px;
             }
@@ -298,26 +316,24 @@
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <div class="navbar">
-        <a href="#" class="logo">浅陌游戏俱乐部</a>
-        <div class="nav-links">
+    <!-- 灵动岛标题栏 -->
+    <div class="dynamic-island" id="dynamic-island">
+        <div class="island-default">浅陌游戏俱乐部</div>
+        <div class="island-buttons">
             <a href="#">2.203.0</a>
-            <a href="https://f.wps.cn/g/yIngAufa/">点击反馈或提交建议</a>
+            <a href="https://f.wps.cn/g/yIngAufa/" target="_blank">点击反馈或提交建议</a>
             <a href="#home">首页</a>
             <a href="#download">下载</a>
             <a href="#announcement">公告</a>
-            <span class="beijing-time" id="beijing-time"></span>
+            <span class="island-time" id="beijing-time"></span>
         </div>
     </div>
-
     <!-- 标题部分 -->
     <section class="header" id="home">
         <h1>欢迎来到浅陌游戏俱乐部</h1>
         <p>永远相信美好的事情即将发生</p>
         <a href="#join-us" class="join-button">加入我们</a>
     </section>
-
     <!-- 公告部分 -->
     <section class="announcement" id="announcement">
         <h2>最新公告</h2>
@@ -335,13 +351,11 @@
             <li class="list-group-item">2024年12月28日19:36:00 网页接近尾声。</li>
         </ul>
     </section>
-
     <!-- 下载部分 -->
     <section class="download-section" id="download">
         <h2>下载页面</h2>
         <a href="download.html" target="_self">进入下载页面</a>
     </section>
-
     <!-- 加入我们部分 -->
     <section class="join-us" id="join-us">
         <h2>加入我们</h2>
@@ -349,7 +363,6 @@
         <p>扫描二维码加入浅陌游戏俱乐部 QQ 群：941254076</p>
         <a href="https://qm.qq.com/q/z4dxDVacNi" class="join-button" target="_blank">点击加入</a>
     </section>
-
     <!-- 页脚 -->
     <footer>
         <div class="container text-center">
@@ -361,21 +374,17 @@
             </div>
         </div>
     </footer>
-
     <!-- 返回顶部按钮 -->
     <button class="back-to-top" onclick="scrollToTop()">↑</button>
-
+    <!-- 核心功能脚本 -->
     <script>
-        // 返回顶部功能
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        // 获取当前北京时间
         function updateBeijingTime() {
             const now = new Date();
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-            const beijingTime = new Date(utc + (3600000 * 8)); // 修正了这里的括号
+            const beijingTime = new Date(utc + (3600000 * 8));
             const year = beijingTime.getFullYear();
             const month = String(beijingTime.getMonth() + 1).padStart(2, '0');
             const day = String(beijingTime.getDate()).padStart(2, '0');
@@ -385,10 +394,16 @@
             const formattedTime = `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
             document.getElementById('beijing-time').textContent = formattedTime;
         }
-
-        // 每秒更新时间
         setInterval(updateBeijingTime, 1000);
         updateBeijingTime();
+        function adaptDynamicIsland() {
+            const island = document.getElementById('dynamic-island');
+            const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+            if (isIOS) {
+                island.style.top = 'env(safe-area-inset-top, 16px)';
+            }
+        }
+        window.addEventListener('load', adaptDynamicIsland);
     </script>
     <script src="js/custom.js"></script>
 </body>
