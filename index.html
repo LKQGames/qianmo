@@ -8,27 +8,27 @@
     <script src="https://cdn.staticfile.org/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <link href="css/custom.css" rel="stylesheet">
     <style>
-        /* 全局样式 */
+        /* 全局样式保持不变 */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
         }
+
         html, body {
             height: 100%;
         }
-        /* 灵动岛标题栏核心样式 - 黑色毛玻璃+果冻回弹动画 */
+        /* 灵动岛核心样式 - 新增移动端点击展开逻辑与向下布局 */
         .dynamic-island {
             width: 280px;
             height: 52px;
-            /* 黑色毛玻璃核心样式 */
-            background-color: rgba(15, 15, 15, 0.85); /* 深黑半透明底色 */
-            backdrop-filter: blur(12px); /* 毛玻璃模糊效果 */
-            -webkit-backdrop-filter: blur(12px); /* 兼容Safari */
-            border: 1px solid rgba(255, 255, 255, 0.1); /* 细边框增强质感 */
+            background-color: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 26px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); /* 增强阴影层次感 */
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
             position: fixed;
             top: 16px;
             left: 50%;
@@ -36,104 +36,95 @@
             z-index: 1000;
             display: flex;
             align-items: center;
-            /* 果冻回弹动画：使用cubic-bezier自定义回弹曲线 */
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* 关键动画曲线 */
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             overflow: hidden;
             padding: 0 20px;
+            cursor: pointer; /* 移动端提示可点击 */
         }
-            /* 灵动岛默认状态文本样式 */
+
             .dynamic-island .island-default {
-                color: #ffffff; /* 白色文本适配黑色背景 */
+                color: #ffffff;
                 font-size: 18px;
                 font-weight: bold;
-                cursor: default;
                 line-height: 1.2;
                 white-space: nowrap;
-                transition: margin-left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* 文本同步回弹 */
+                transition: margin-left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
                 margin-left: 0;
             }
-            /* 灵动岛展开状态 - 果冻回弹效果 */
+        /* 桌面端hover展开逻辑（保持不变） */
+        @media (min-width: 769px) {
             .dynamic-island:hover {
                 width: 80%;
                 max-width: 1200px;
                 border-radius: 26px;
-                transform: translateX(-50%) scale(1.02); /* 轻微缩放增强回弹感 */
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* 展开时阴影加深 */
+                transform: translateX(-50%) scale(1.02);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
             }
-                .dynamic-island:hover .island-default {
-                    margin-left: 0;
+
+                .dynamic-island:hover .island-buttons {
+                    opacity: 1;
+                    margin-left: 20px;
                 }
-        /* 交互按钮容器 */
+
+                .dynamic-island:hover .island-time {
+                    opacity: 1;
+                }
+        }
+        /* 交互按钮容器 - 新增移动端垂直布局样式 */
         .island-buttons {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 20px; /* 桌面端水平间距 */
             margin-left: auto;
             opacity: 0;
-            /* 按钮组动画延迟，让回弹更有层次 */
-            transition: opacity 0.4s ease 0.2s, margin-left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: opacity 0.4s ease 0.2s, margin-left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), flex-direction 0.3s ease, /* 布局方向过渡 */
+            gap 0.3s ease, /* 间距过渡 */
+            margin-top 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* 垂直间距过渡 */
             padding: 0;
         }
-        /* 展开时显示按钮组 */
-        .dynamic-island:hover .island-buttons {
-            opacity: 1;
-            margin-left: 20px;
-        }
-        /* 交互按钮样式 - 适配黑色毛玻璃 */
-        .island-buttons a {
-            text-decoration: none;
-            color: #ffffff; /* 白色文本 */
-            font-size: 16px;
-            padding: 6px 12px;
-            border-radius: 4px;
-            transition: background-color 0.3s, color 0.3s, transform 0.2s;
-            white-space: nowrap;
-        }
-            .island-buttons a:hover {
-                background-color: rgba(212, 0, 0, 0.8); /* 红色半透明背景 */
-                color: #ffffff;
-                transform: scale(1.05); /* 按钮hover轻微缩放 */
-            }
-        /* 时间显示样式 */
+        /* 时间显示样式 - 适配移动端垂直布局 */
         .island-time {
             font-size: 14px;
-            color: #ffffff; /* 白色文本 */
-            margin-left: 20px;
+            color: #ffffff;
+            margin-left: 20px; /* 桌面端水平间距 */
             margin-right: 0;
             opacity: 0;
-            transition: opacity 0.4s ease 0.2s;
+            transition: opacity 0.4s ease 0.2s, margin-left 0.3s ease, /* 水平间距过渡 */
+            margin-top 0.3s ease, /* 垂直间距过渡 */
+            width 0.3s ease, text-align 0.3s ease;
             white-space: nowrap;
         }
-        /* 展开时显示时间 */
-        .dynamic-island:hover .island-time {
-            opacity: 1;
-        }
-        /* 原页面其他样式保留 */
+        /* 原页面其他样式保持不变 */
         .header {
             text-align: center;
             padding: 100px 20px 20px;
             background-color: transparent;
             animation: fadeIn 2s ease-out;
         }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(-50px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
         .header h1 {
             font-size: 48px;
             color: #ff8c42;
             margin-bottom: 10px;
         }
+
         .header p {
             font-size: 20px;
             color: #ffcccc;
         }
+
         .header .join-button {
             display: inline-block;
             margin-top: 20px;
@@ -146,20 +137,24 @@
             box-shadow: 0 0 15px rgba(255, 92, 92, 0.7);
             transition: transform 0.3s, box-shadow 0.3s;
         }
+
             .header .join-button:hover {
                 transform: scale(1.1);
                 box-shadow: 0 0 20px rgba(255, 92, 92, 1);
             }
+
         .announcement {
             text-align: center;
             padding: 40px 20px;
             background-color: transparent;
         }
+
             .announcement h2 {
                 font-size: 32px;
                 color: #ff8c42;
                 margin-bottom: 20px;
             }
+
             .announcement ul {
                 list-style: none;
                 padding: 0;
@@ -167,6 +162,7 @@
                 max-width: 600px;
                 text-align: left;
             }
+
             .announcement .list-group-item {
                 background-color: rgba(255, 92, 92, 0.8);
                 margin-bottom: 10px;
@@ -175,16 +171,19 @@
                 color: #ffffff;
                 line-height: 1.6;
             }
+
         .download-section {
             text-align: center;
             padding: 40px 20px;
             background-color: transparent;
         }
+
             .download-section h2 {
                 font-size: 32px;
                 color: #ff8c42;
                 margin-bottom: 20px;
             }
+
             .download-section a {
                 display: inline-block;
                 padding: 12px 24px;
@@ -196,30 +195,36 @@
                 box-shadow: 0 0 15px rgba(255, 92, 92, 0.7);
                 transition: transform 0.3s, box-shadow 0.3s;
             }
+
                 .download-section a:hover {
                     transform: scale(1.1);
                     box-shadow: 0 0 20px rgba(255, 92, 92, 1);
                 }
+
         .join-us {
             text-align: center;
             padding: 40px 20px;
             background-color: transparent;
         }
+
             .join-us h2 {
                 font-size: 32px;
                 color: #ff8c42;
                 margin-bottom: 20px;
             }
+
             .join-us img {
                 width: 200px;
                 height: auto;
                 margin-bottom: 20px;
             }
+
             .join-us p {
                 font-size: 18px;
                 color: #ffcccc;
                 margin-bottom: 20px;
             }
+
             .join-us .join-button {
                 display: inline-block;
                 padding: 12px 24px;
@@ -231,10 +236,12 @@
                 box-shadow: 0 0 15px rgba(255, 92, 92, 0.7);
                 transition: transform 0.3s, box-shadow 0.3s;
             }
+
                 .join-us .join-button:hover {
                     transform: scale(1.1);
                     box-shadow: 0 0 20px rgba(255, 92, 92, 1);
                 }
+
         footer {
             text-align: center;
             padding: 20px 10px;
@@ -242,10 +249,12 @@
             color: #cccccc;
             margin-top: 20px;
         }
+
             footer .container p {
                 margin: 5px 0;
                 font-size: 16px;
             }
+
             footer .social-icons a {
                 margin: 0 10px;
                 text-decoration: none;
@@ -253,12 +262,15 @@
                 font-size: 18px;
                 transition: color 0.3s;
             }
+
                 footer .social-icons a:hover {
                     color: #ffffff;
                 }
+
             footer .social-icons i {
                 margin-right: 5px;
             }
+
         .back-to-top {
             position: fixed;
             bottom: 20px;
@@ -273,51 +285,83 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
         }
+
             .back-to-top:hover {
                 transform: scale(1.2);
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             }
-        /* 响应式设计优化 */
+        /* 移动端核心优化：单点展开+向下垂直布局 */
         @media (max-width: 768px) {
             .dynamic-island {
                 width: 240px;
                 height: 48px;
                 padding: 0 15px;
-                background-color: rgba(15, 15, 15, 0.9); /* 移动端加深透明度 */
+                background-color: rgba(15, 15, 15, 0.9);
+                /* 初始状态隐藏溢出内容（按钮组） */
+                overflow: hidden;
             }
+
                 .dynamic-island .island-default {
                     font-size: 16px;
+                    /* 确保标题在点击前居中 */
+                    margin: 0 auto;
                 }
-                .dynamic-island:hover {
+                /* 移动端点击展开状态（通过添加.active类实现） */
+                .dynamic-island.active {
                     width: 90%;
-                    flex-wrap: wrap;
-                    padding: 8px 15px;
-                    height: auto;
-                    transform: translateX(-50%) scale(1.01); /* 移动端轻微缩放 */
+                    height: auto; /* 自适应高度，容纳垂直按钮组 */
+                    padding: 12px 15px; /* 上下内边距，优化垂直布局 */
+                    border-radius: 16px; /* 圆角稍扁，适配垂直展开形态 */
+                    transform: translateX(-50%) scale(1.01); /* 轻微缩放保持果冻感 */
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45); /* 加深阴影增强层次感 */
+                    flex-direction: column; /* 整体布局改为垂直方向 */
+                    align-items: flex-start; /* 标题左对齐 */
+                    gap: 12px; /* 标题与按钮组的垂直间距 */
                 }
-                    .dynamic-island:hover .island-buttons {
-                        margin-left: 0;
-                        margin-top: 8px;
-                        width: 100%;
-                        justify-content: center;
-                        gap: 8px;
+                    /* 展开后标题样式：左对齐+保持白色 */
+                    .dynamic-island.active .island-default {
+                        margin: 0; /* 取消居中margin，改为左对齐 */
+                        font-size: 17px;
+                        font-weight: bold;
                     }
-            .island-time {
-                margin-left: 0;
-                margin-top: 8px;
-                width: 100%;
-                text-align: center;
-                font-size: 13px;
-            }
+                    /* 移动端按钮组：垂直排列+居中+固定宽度 */
+                    .dynamic-island.active .island-buttons {
+                        opacity: 1;
+                        margin: 0 auto; /* 按钮组水平居中 */
+                        padding: 8px 0;
+                        width: 100%; /* 占满灵动岛宽度，确保左右间距一致 */
+                        max-width: 320px; /* 限制最大宽度，避免过宽 */
+                        flex-direction: column; /* 按钮垂直排列 */
+                        align-items: center; /* 按钮水平居中 */
+                        gap: 10px; /* 按钮垂直间距（替代原水平gap） */
+                    }
+                        /* 按钮样式优化：适配垂直布局+增加点击区域 */
+                        .dynamic-island.active .island-buttons a {
+                            width: 90%; /* 按钮占满按钮组宽度，确保左右间距一致 */
+                            padding: 8px 0;
+                            text-align: center; /* 按钮文本居中 */
+                            font-size: 15px;
+                            border-radius: 8px; /* 按钮圆角优化 */
+                        }
+                    /* 移动端时间显示：垂直布局+居中 */
+                    .dynamic-island.active .island-time {
+                        opacity: 1;
+                        margin: 8px auto 0; /* 与按钮组垂直间距+水平居中 */
+                        width: 100%;
+                        text-align: center;
+                        font-size: 13px;
+                        color: rgba(255, 255, 255, 0.9); /* 轻微透明，避免抢焦点 */
+                    }
+            /* 调整页面顶部 padding，避免被展开的灵动岛遮挡 */
             .header {
-                padding: 120px 10px 20px;
+                padding: 140px 10px 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 灵动岛标题栏 -->
-    <div class="dynamic-island" id="dynamic-island">
+    <!-- 灵动岛标题栏：添加点击事件 -->
+    <div class="dynamic-island" id="dynamic-island" onclick="toggleIsland()">
         <div class="island-default">浅陌游戏俱乐部</div>
         <div class="island-buttons">
             <a href="#">2.203.0</a>
@@ -376,11 +420,13 @@
     </footer>
     <!-- 返回顶部按钮 -->
     <button class="back-to-top" onclick="scrollToTop()">↑</button>
-    <!-- 核心功能脚本 -->
+    <!-- 核心功能脚本：新增灵动岛点击切换逻辑 -->
     <script>
+        // 返回顶部功能
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+        // 北京时间更新
         function updateBeijingTime() {
             const now = new Date();
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -396,6 +442,7 @@
         }
         setInterval(updateBeijingTime, 1000);
         updateBeijingTime();
+        // 刘海屏适配
         function adaptDynamicIsland() {
             const island = document.getElementById('dynamic-island');
             const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
@@ -404,6 +451,34 @@
             }
         }
         window.addEventListener('load', adaptDynamicIsland);
+
+        // 新增：移动端灵动岛点击展开/恢复逻辑
+        function toggleIsland() {
+            // 仅在移动端生效（匹配CSS媒体查询断点）
+            if (window.innerWidth <= 768) {
+                const island = document.getElementById('dynamic-island');
+                // 切换.active类，控制展开/恢复状态
+                island.classList.toggle('active');
+
+                // 优化体验：点击按钮后自动收起灵动岛（避免遮挡内容）
+                const buttons = island.querySelectorAll('.island-buttons a');
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        island.classList.remove('active');
+                    });
+                });
+            }
+        }
+
+        // 新增：点击页面其他区域，自动收起灵动岛（优化体验）
+        document.addEventListener('click', (e) => {
+            const island = document.getElementById('dynamic-island');
+            const isIsland = island.contains(e.target);
+            // 移动端+灵动岛处于展开状态+点击非灵动岛区域 → 收起
+            if (window.innerWidth <= 768 && island.classList.contains('active') && !isIsland) {
+                island.classList.remove('active');
+            }
+        });
     </script>
     <script src="js/custom.js"></script>
 </body>
